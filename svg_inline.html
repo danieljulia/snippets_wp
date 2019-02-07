@@ -1,0 +1,76 @@
+<script>
+/**
+puts an external svg inline in order to make
+it available to jquery interaction
+**/
+
+(function($) {
+    $(document).ready(function() {
+
+            xhr = new XMLHttpRequest();
+      xhr.open("GET","<?php echo get_stylesheet_directory_uri()?>/img/mapa_europa.png",false);
+      xhr.overrideMimeType("image/svg+xml");
+      xhr.send("");
+      document.getElementById("svgContainer")
+        .appendChild(xhr.responseXML.documentElement);
+
+        var col_inactive='#aaaaaa';
+        var col_rollover="green";
+        var col_rollout="#7DAD44";
+
+        var paisos=['irish','british','danish','finland','estonia','swiss','flemish'];
+
+        var current_pais="";
+
+        $('svg path').attr('fill',col_inactive);
+          $('svg path').attr('stroke','#ffffff');
+            $('svg path').attr('stroke-width','1');
+              $('svg path').attr('stroke-miterlimit','10');
+
+
+
+
+        for(var i=0;i<paisos.length;i++){
+          $('svg #'+paisos[i]+' path').attr('fill','#7DAD44');
+          $('svg #'+paisos[i]).on('click touchstart',function(){
+
+            current_pais=$(this).attr('id');
+            window.location.href="<?php echo home_url()?>/members/#"+current_pais;
+
+          });
+
+            $('svg #'+paisos[i]).on('mousemove',function(){
+                current_pais=$(this).attr('id');
+                  var left = event.pageX+50;//- $(this).offset().left + 100;
+                  var top = event.pageY-50;// - $(this).offset().top + 130;
+                  $('#tooltip').html(current_pais);
+                   $('#tooltip').css({top: top,left: left}).show();
+                  console.log("left top",left,top);
+              });
+
+          $('svg #'+paisos[i]).on('mouseover touchstart',function(){
+            $(this).find('path').each(function(){
+                  $(this).attr('fill',col_rollover);
+            });
+            current_pais=$(this).attr('id');
+
+
+          });
+          $('svg #'+paisos[i]).on('mouseout',function(){
+            $(this).find('path').each(function(){
+                  $(this).attr('fill',col_rollout);
+            });
+            current_pais="";
+              $('#tooltip').hide();
+          });
+
+
+        }
+
+
+
+  });
+})( jQuery );
+
+
+  </script>
